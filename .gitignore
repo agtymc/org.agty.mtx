@@ -4,6 +4,7 @@ sessions/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+AGENTS.md
 
 ### STS ###
 .apt_generated
@@ -34,3 +35,21 @@ build/
 .vscode/
 config.ini
 config.ini-prod
+
+# User requested ignore rules
+\!files
+files
+.idea
+scripts
+sessions
+.codex
+.codex-chat-provider
+.agents
+
+# Local SQLite database files
+chat-app.db
+chat-app.db-wal
+chat-app.db-shm
+*.db
+*.db-wal
+*.db-shm
