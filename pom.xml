@@ -94,4 +94,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub agtymc Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/agtymc/org.agty.mtx</url>
+        </repository>
+    </distributionManagement>
 </project>

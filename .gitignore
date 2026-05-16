@@ -1,10 +1,11 @@
 HELP.md
+AGENTS.md
 target/
 sessions/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-AGENTS.md
+
 
 ### STS ###
 .apt_generated

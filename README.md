@@ -1,140 +1,142 @@
-# AGTY/MTX (`org-agty-mtx`)
+# AGTY/MTX
 
-Веб-приложение чата на Spring Boot с пользовательскими аккаунтами, группировкой диалогов, потоковой генерацией ответов и поддержкой нескольких backend-моделей:
-- локальные модели через Ollama,
-- локальный Codex CLI (`codex:local`),
-- Codex через OpenAI API (`codex:api`).
+Created with Codex; it does not aim to be a project that replaces all LLM chat apps. Distributed AS-IS.
 
-## Технологии
+A Spring Boot chat web application with user accounts, grouped conversations, streaming responses, and multiple model backends:
+- local models via Ollama,
+- local Codex CLI (`codex:local`): an account is required, and if you run through a proxy, configure it accordingly (see the installation instructions).
+- Codex via OpenAI API (`codex:api`): not fully completed yet.
+
+## Tech Stack
 
 - Java 17
 - Spring Boot 3.1.5 (Web, WebFlux, Thymeleaf, Security, JPA)
 - SQLite (`sqlite-jdbc`) + Hibernate dialect
 - Frontend: Vanilla JS + CSS + Thymeleaf templates
 
-## Основные возможности
+## Core Features
 
-### 1) Аутентификация и сессии
+### 1) Authentication and Sessions
 
-- Регистрация и вход по логину/паролю.
-- Выход из аккаунта.
-- Просмотр текущей авторизации (`/api/auth/me`).
-- Профиль пользователя: имя и email.
-- Смена пароля.
-- Длительная серверная сессия:
+- Register and login with username/password.
+- Logout.
+- Current auth status endpoint (`/api/auth/me`).
+- User profile: display name and email.
+- Password change.
+- Long-lived server session:
   - timeout `30d`,
   - persistent sessions,
-  - хранение сессий в `./sessions`.
+  - session storage in `./sessions`.
 
-### 2) Чаты и группы
+### 2) Chats and Groups
 
-- Дерево «Группы и чаты» в боковом меню.
-- Автосоздание дефолтной группы и первого чата для нового пользователя.
-- CRUD по группам:
-  - создать, переименовать, удалить,
-  - перетасовка порядка групп,
-  - защита от удаления последней группы,
-  - перенос чатов при удалении группы.
-- CRUD по чатам:
-  - создать, переименовать, удалить,
-  - перенос между группами,
-  - переупорядочивание чатов внутри группы.
-- Сворачивание/разворачивание групп с сохранением состояния на сервере.
+- "Groups and Chats" tree in the sidebar.
+- Automatic default group and first chat creation for new users.
+- Group CRUD:
+  - create, rename, delete,
+  - reorder groups,
+  - protection from deleting the last group,
+  - move chats when deleting a group.
+- Chat CRUD:
+  - create, rename, delete,
+  - move between groups,
+  - reorder chats inside a group.
+- Group collapse/expand state persisted on the server.
 
-### 3) Сообщения и генерация
+### 3) Messaging and Generation
 
-- Обычная отправка сообщения (sync).
-- Потоковая генерация ответа (stream/SSE-подобный поток чанков).
-- Остановка активной генерации (кнопка стоп + backend endpoint).
-- Автогенерация названия нового чата по первому сообщению.
-- Поддержка `temperature` в запросах к модели.
-- Приватный чат:
-  - не сохраняется в БД,
-  - поддерживает потоковую генерацию по истории в памяти клиента.
+- Regular message send (sync).
+- Streaming responses (chunked stream).
+- Stop active generation (stop button + backend endpoint).
+- Auto-title generation for new chats from the first user message.
+- `temperature` support for model requests.
+- Private chat mode:
+  - not stored in the database,
+  - supports streaming with in-memory history on the client side.
 
-### 4) Поддерживаемые backend-модели
+### 4) Supported Model Backends
 
-- **Ollama**: список локальных моделей, sync/stream запросы, usage-метрики.
+- **Ollama**: local model list, sync/stream requests, usage metrics.
 - **Codex Local (CLI)**:
-  - модель-алиас (по умолчанию `codex:local`),
-  - запуск внешней команды (`codexp exec ...`),
-  - режим `resume --last` при `keep_session=true`,
-  - fallback на новый запуск при ошибке resume,
-  - опциональный debug-лог.
+  - model alias (default `codex:local`),
+  - external command execution (`codexp exec ...`),
+  - `resume --last` mode when `keep_session=true`,
+  - fallback to fresh execution if resume fails,
+  - optional debug logging.
 - **Codex API (OpenAI)**:
-  - модель-алиас (по умолчанию `codex:api`),
-  - запросы к `/chat/completions` (sync/stream),
-  - поддержка прокси,
-  - API ключ из `config.ini` или `OPENAI_API_KEY`.
+  - model alias (default `codex:api`),
+  - `/chat/completions` requests (sync/stream),
+  - proxy support,
+  - API key from `config.ini` or `OPENAI_API_KEY`.
 
-### 5) Каталог моделей
+### 5) Model Catalog
 
-- Загрузка моделей при старте приложения.
-- Обновление списка моделей по кнопке (`loading...` в UI во время обновления).
-- Слияние списка Ollama + включенных Codex-алиасов.
-- Выбор модели в форме отправки.
-- Сохранение выбранной модели в пользовательских настройках.
+- Model loading on application startup.
+- Manual model list refresh (`loading...` state in UI while refreshing).
+- Merged list of Ollama models + enabled Codex aliases.
+- Model selection in the send form.
+- Selected model persisted in user settings.
 
 ### 6) UI/UX
 
-- Темная/светлая тема.
-- Настройки интерфейса на пользователя:
-  - размер шрифта чата,
-  - размер шрифта меню,
-  - ширина sidebar,
-  - сторона кнопок навигации по ответам (left/right),
-  - выбранная модель.
-- Ограниченный внутренний контейнер чата.
-- Адаптивная прокрутка:
-  - авто-скролл во время стрима,
-  - отключение авто-скролла при ручной прокрутке,
-  - навигационные кнопки вверх/вниз по ответам.
-- Кнопки копирования:
-  - копирование сообщения,
-  - копирование блоков кода.
+- Dark/light theme.
+- Per-user UI settings:
+  - chat font size,
+  - menu font size,
+  - sidebar width,
+  - answer navigation side (left/right),
+  - selected model.
+- Constrained inner chat container.
+- Adaptive scrolling:
+  - auto-scroll during streaming,
+  - auto-scroll disable on manual user scroll,
+  - up/down navigation buttons for assistant answers.
+- Copy actions:
+  - copy full message,
+  - copy code blocks.
 
-### 7) Статистика и токены
+### 7) Statistics and Tokens
 
-- Отображение токенов текущего чата: input/output/total.
-- Раздел «Статистика» по моделям:
-  - число ответов,
+- Current chat token counters: input/output/total.
+- "Statistics" section by model:
+  - reply count,
   - prompt/completion/total tokens,
-  - средние токены на ответ,
+  - average tokens per reply,
   - output tokens/sec,
-  - суммы и средние по duration-метрикам,
+  - summed and average duration metrics,
   - done reasons,
-  - первое/последнее использование.
-- Сводная статистика по всем моделям пользователя.
+  - first/last usage timestamps.
+- Overall usage summary across all user models.
 
-### 8) Дополнительные страницы
+### 8) Additional Pages
 
 - `/about`
 - `/contacts`
 - `/downloads`
 
-### 9) Печать
+### 9) Print Mode
 
-- Специальный print-режим: в печати остается текст чата и ссылка на домен-источник.
+- Dedicated print mode: chat text and source domain link only.
 
-## Конфигурация
+## Configuration
 
 ### `application.yml`
 
-Ключевые параметры по умолчанию:
+Default key settings:
 - `server.port: 8080`
 - SQLite: `jdbc:sqlite:./chat-app.db...`
 - `spring.jpa.hibernate.ddl-auto: update`
-- сессии: `30d`, `persistent: true`, `store-dir: ./sessions`
+- sessions: `30d`, `persistent: true`, `store-dir: ./sessions`
 - Ollama API: `http://localhost:11434`
 
 ### `config.ini`
 
-Скопируйте `config.ini-sample` в `config.ini` и настройте нужные блоки:
+Copy `config.ini-sample` to `config.ini` and configure the required blocks:
 
-- `codex.local.*` для локального CLI режима
-- `codex.api.*` для API режима (включая прокси)
+- `codex.local.*` for local CLI mode
+- `codex.api.*` for API mode (including proxy)
 
-Пример:
+Example:
 
 ```ini
 codex.local.enable=true
@@ -146,25 +148,36 @@ codex.api.api_key=YOUR_KEY
 codex.api.openai_model=gpt-5.5
 ```
 
-## Запуск
+## Run
 
-### Требования
+### Requirements
 
 - JDK 17+
-- Maven Wrapper (уже в проекте)
-- (опционально) локальный Ollama
-- (опционально) `codexp` для режима `codex:local`
+- Maven Wrapper (already included)
+- (optional) local Ollama
+- (optional) `codexp` for `codex:local`
 
-### Команды
+### Commands
 
 ```bash
 ./mvnw -q -DskipTests compile
 ./mvnw spring-boot:run
 ```
 
-Открыть: `http://localhost:8080`
+Open: `http://localhost:8080`
 
-## Основные API-эндпоинты
+## Installation Guides
+
+Application/service installation guides are located in the `installation/` directory:
+
+- Unix service (EN): `installation/en/install-agtymx-as-service.md`
+- Unix service (RU): `installation/ru/install-agtymx-as-service.md`
+- Windows service (EN): `installation/en/install-agtymx-as-service-windows.md`
+- Windows service (RU): `installation/ru/install-agtymx-as-service-windows.md`
+- Codex proxy wrapper (EN): `installation/en/codex-proxy-install-unix.md`, `installation/en/codex-proxy-install-windows.md`
+- Codex proxy wrapper (RU): `installation/ru/codex-proxy-install-unix.md`, `installation/ru/codex-proxy-install-windows.md`
+
+## Main API Endpoints
 
 - Auth:
   - `POST /api/auth/register`
@@ -173,37 +186,37 @@ codex.api.openai_model=gpt-5.5
   - `GET /api/auth/me`
   - `GET/PUT /api/auth/profile`
   - `POST /api/auth/change-password`
-- Модели и bootstrap:
+- Models and bootstrap:
   - `GET /api/bootstrap`
   - `GET /api/models`
   - `POST /api/models/refresh`
-- Настройки и статистика:
+- Settings and stats:
   - `GET/PUT /api/settings`
   - `GET /api/stats/models`
-- Группы:
+- Groups:
   - `GET/POST /api/groups`
   - `PUT/DELETE /api/groups/{groupId}`
   - `PATCH /api/groups/reorder`
   - `PUT /api/groups/collapsed`
-- Чаты:
+- Chats:
   - `GET/POST /api/chats`
   - `GET/PUT/DELETE /api/chats/{chatId}`
   - `PATCH /api/chats/{chatId}/move`
   - `PATCH /api/chats/reorder`
   - `DELETE /api/chats/{chatId}/group`
-- Сообщения:
+- Messages:
   - `POST /api/chats/{chatId}/messages`
   - `POST /api/chats/{chatId}/messages/stream`
   - `POST /api/chats/{chatId}/messages/stop`
   - `POST /api/private/messages/stream`
 
-## Безопасность
+## Security
 
-- Spring Security с сессионной auth.
-- Доступ к `/api/**` только для авторизованных пользователей (кроме `/api/auth/**`).
-- Пароли хэшируются через BCrypt.
+- Spring Security with session-based auth.
+- `/api/**` is restricted to authenticated users (except `/api/auth/**`).
+- Passwords are hashed with BCrypt.
 
-## Примечания по репозиторию
+## Repository Notes
 
-- Локальная БД (`chat-app.db*`) и сессии должны быть в `.gitignore`.
-- Скрипт `scripts/update-project-context.sh` обновляет `files/project-context.md` по локальной истории сессий Codex.
+- Local DB files (`chat-app.db*`) and session files should stay in `.gitignore`.
+- `scripts/update-project-context.sh` updates `files/project-context.md` from local Codex session history.
