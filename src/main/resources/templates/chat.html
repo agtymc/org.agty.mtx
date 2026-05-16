@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGTY/MTX</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="stylesheet" href="/style.css?v60">
+</head>
+<body data-theme="dark">
+<div id="authView" class="auth-view hidden">
+    <div class="auth-card">
+        <h1>AGTY/MTX</h1>
+        <p>MultiTrained eXperience</p>
+
+        <div class="auth-tabs">
+            <button id="loginTab" class="tab-btn active" type="button">Вход</button>
+            <button id="registerTab" class="tab-btn" type="button">Регистрация</button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+            <label>
+                Логин
+                <input id="authUsername" type="text" minlength="3" maxlength="64" required>
+            </label>
+            <label>
+                Пароль
+                <input id="authPassword" type="password" minlength="6" maxlength="128" required>
+            </label>
+            <button id="authSubmit" type="submit">Войти</button>
+            <div id="authError" class="error-text"></div>
+        </form>
+    </div>
+</div>
+
+<div id="appView" class="app-view hidden">
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo">AGTY/MTX</div>
+            <div class="brand-subtitle">MultiTrained eXperience</div>
+        </div>
+        <div class="tree-header">
+            <h3>Группы и чаты</h3>
+            <button id="addGroupBtn" type="button">+ Группа</button>
+        </div>
+        <div id="chatTree" class="chat-tree"></div>
+
+        <div class="sidebar-bottom">
+            <button id="accountButton" class="account-btn" type="button">
+                <span id="accountAvatar" class="avatar"></span>
+                <span id="accountName" class="account-name"></span>
+                <span class="account-caret">▾</span>
+            </button>
+
+            <div id="accountMenu" class="account-menu hidden">
+                <button id="profileBtn" type="button">Профиль</button>
+                <button id="settingsBtn" type="button">Настройки</button>
+                <button id="statsBtn" type="button">Статистика</button>
+                <button id="logoutBtn" type="button" class="danger-lite">Выйти</button>
+            </div>
+
+            <div class="sidebar-links">
+                <a class="sidebar-link" href="/about">Описание</a>
+                <a class="sidebar-link" href="/contacts">Контакты</a>
+                <a class="sidebar-link" href="/downloads">Загрузки</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="chat-panel">
+        <div class="chat-inner">
+            <div class="chat-header">
+                <div class="chat-head-row">
+                    <div class="chat-head-main">
+                        <div id="chatTitle" class="chat-title">Выберите чат</div>
+                        <div id="chatTokenUsage" class="chat-token-usage hidden">Токены: вход 0 · выход 0 · всего 0</div>
+                    </div>
+                    <div class="chat-head-actions">
+                        <button id="newChatBtn" type="button" class="chat-header-btn">Новый чат</button>
+                        <button id="privateChatBtn" type="button" class="chat-header-btn">Приватный чат</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="printMeta" class="print-meta hidden">
+                Источник:
+                <a id="printDomainLink" href="#" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+                <div id="chatMessagesInner" class="chat-messages-inner">
+                    <div class="empty-state">Выберите чат в левом меню</div>
+                </div>
+            </div>
+
+            <form id="sendForm" class="send-form">
+                <div class="send-form-inner">
+                    <div class="empty-chat-title">AGTY/MTX</div>
+                    <textarea id="messageInput" rows="3" placeholder="Введите сообщение (Enter — отправить, Shift+Enter — новая строка)"></textarea>
+                    <div class="send-row">
+                        <button id="refreshModelsBtn" type="button" class="model-refresh-btn" title="Обновить список моделей">↻</button>
+                        <select id="modelSelect"></select>
+                        <button id="expandInputBtn" type="button" class="input-expand-btn" title="Расширенный ввод">⤢</button>
+                        <button id="sendBtn" type="submit">Отправить</button>
+                    </div>
+                </div>
+            </form>
+
+            <section id="profilePage" class="workspace-page hidden" aria-live="polite">
+                <div class="workspace-card">
+                    <h2>Профиль</h2>
+                    <p class="workspace-note">Изменения сохраняются для вашего аккаунта на сервере.</p>
+                    <form id="profileForm" class="workspace-form">
+                        <label>
+                            Логин
+                            <input id="profileUsername" type="text" disabled>
+                        </label>
+                        <label>
+                            Имя
+                            <input id="profileDisplayName" type="text" maxlength="120" placeholder="Введите имя">
+                        </label>
+                        <label>
+                            Почта
+                            <input id="profileEmail" type="email" maxlength="190" placeholder="name@example.com">
+                        </label>
+                        <button id="saveProfileBtn" type="submit">Сохранить профиль</button>
+                        <div id="profileStatus" class="inline-status"></div>
+                    </form>
+
+                    <div class="workspace-divider"></div>
+
+                    <h3>Смена пароля</h3>
+                    <form id="passwordForm" class="workspace-form">
+                        <label>
+                            Текущий пароль
+                            <input id="currentPasswordInput" type="password" minlength="6" maxlength="128" required>
+                        </label>
+                        <label>
+                            Новый пароль
+                            <input id="newPasswordInput" type="password" minlength="6" maxlength="128" required>
+                        </label>
+                        <label>
+                            Повтор нового пароля
+                            <input id="confirmPasswordInput" type="password" minlength="6" maxlength="128" required>
+                        </label>
+                        <button id="savePasswordBtn" type="submit">Обновить пароль</button>
+                        <div id="passwordStatus" class="inline-status"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="settingsPage" class="workspace-page hidden" aria-live="polite">
+                <div class="workspace-card">
+                    <h2>Настройки</h2>
+                    <p class="workspace-note">Настройки привязаны к вашему аккаунту.</p>
+                    <form id="settingsForm" class="workspace-form">
+                        <label>
+                            Размер шрифта чата (px)
+                            <input id="fontSizeInput" type="number" min="11" max="28" step="1" required>
+                        </label>
+                        <label>
+                            Размер шрифта меню (px)
+                            <input id="menuFontSizeInput" type="number" min="10" max="24" step="1" required>
+                        </label>
+                        <label>
+                            Ширина меню (px)
+                            <input id="sidebarWidthInput" type="number" min="260" max="520" step="1" required>
+                        </label>
+                        <label>
+                            Кнопки навигации по ответам
+                            <select id="answerNavSideInput">
+                                <option value="right">Справа</option>
+                                <option value="left">Слева</option>
+                            </select>
+                        </label>
+                        <div class="menu-section settings-theme">
+                            <div class="menu-label">Тема</div>
+                            <label class="theme-toggle" for="themeToggle">
+                                <input id="themeToggle" type="checkbox">
+                                <span class="theme-toggle-track">
+                                    <span class="theme-toggle-knob"></span>
+                                </span>
+                                <span class="theme-label theme-light">Светлая</span>
+                                <span class="theme-label theme-dark">Тёмная</span>
+                            </label>
+                        </div>
+                        <button id="saveSettingsBtn" type="submit">Сохранить настройки</button>
+                        <div id="settingsStatus" class="inline-status"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="statsPage" class="workspace-page hidden" aria-live="polite">
+                <div class="workspace-card">
+                    <h2>Статистика</h2>
+                    <p class="workspace-note">Метрики использования моделей по вашим сохраненным чатам.</p>
+                    <div id="statsStatus" class="inline-status"></div>
+                    <div id="statsContent" class="stats-grid"></div>
+                </div>
+            </section>
+        </div>
+        <div id="answerNav" class="answer-nav hidden" aria-label="Навигация по ответам модели">
+            <button id="prevAnswerBtn" type="button" class="answer-nav-btn">↑</button>
+            <button id="nextAnswerBtn" type="button" class="answer-nav-btn">↓</button>
+        </div>
+        <div id="adaptiveScrollNav" class="adaptive-scroll-nav hidden" aria-label="Адаптивная прокрутка чата">
+            <button id="adaptiveScrollBtn" type="button" class="adaptive-scroll-btn">↓</button>
+        </div>
+    </main>
+</div>
+
+<div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal-card">
+        <div id="confirmTitle" class="modal-title">Подтвердите действие</div>
+        <div id="confirmText" class="modal-text"></div>
+        <div class="modal-actions">
+            <button id="confirmCancelBtn" type="button" class="modal-btn secondary">Отмена</button>
+            <button id="confirmOkBtn" type="button" class="modal-btn danger">Удалить</button>
+        </div>
+    </div>
+</div>
+
+<div id="inputModal" class="modal-overlay hidden">
+    <div class="modal-card">
+        <div id="inputTitle" class="modal-title">Редактирование</div>
+        <label class="modal-field">
+            <span id="inputLabel" class="menu-label">Название</span>
+            <input id="inputValue" type="text" maxlength="160" autocomplete="off">
+        </label>
+        <div class="modal-actions">
+            <button id="inputCancelBtn" type="button" class="modal-btn secondary">Отмена</button>
+            <button id="inputOkBtn" type="button" class="modal-btn">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div id="composeModal" class="modal-overlay hidden">
+    <div class="modal-card compose-modal-card">
+        <div class="modal-title">Расширенный ввод</div>
+        <label class="modal-field">
+            <span class="menu-label">Текст сообщения</span>
+            <textarea id="composeInput" rows="14" placeholder="Введите сообщение"></textarea>
+        </label>
+        <div class="compose-bottom-row">
+            <div class="compose-model-wrap">
+                <button id="composeRefreshModelsBtn" type="button" class="model-refresh-btn" title="Обновить список моделей">↻</button>
+                <select id="composeModelSelect"></select>
+            </div>
+            <div class="modal-actions">
+                <button id="composeCancelBtn" type="button" class="modal-btn secondary">Отмена</button>
+                <button id="composeApplyBtn" type="button" class="modal-btn">Применить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="/script.js?v49"></script>
+</body>
+</html>

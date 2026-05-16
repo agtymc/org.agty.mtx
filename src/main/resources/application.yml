@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: org-agty-mtx
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  datasource:
+    url: jdbc:sqlite:./chat-app.db?busy_timeout=10000&journal_mode=WAL&synchronous=NORMAL
+    driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1
+      minimum-idle: 1
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+  mvc:
+    async:
+      request-timeout: 300000
+
+server:
+  port: 8080
+  error:
+    include-message: always
+  servlet:
+    session:
+      timeout: 30d
+      persistent: true
+      store-dir: ./sessions
+      cookie:
+        max-age: 30d
+
+ollama:
+  api:
+    url: http://localhost:11434
+    timeout: 30000
+
+# Для переключения на другую БД (PostgreSQL/MySQL и т.д.)
+# достаточно переопределить spring.datasource.* и, при необходимости,
+# spring.jpa.properties.hibernate.dialect через profile/env.
