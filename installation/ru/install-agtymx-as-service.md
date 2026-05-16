@@ -119,3 +119,13 @@ sudo systemctl stop org.agty.mtx.service
 ```bash
 sudo systemctl disable org.agty.mtx.service
 ```
+## Адрес в браузере
+
+После запуска приложения/сервиса откройте:
+
+```text
+http://localhost:8080
+```
+
+Если меняли `server.port`, используйте тот же хост с вашим портом.
+

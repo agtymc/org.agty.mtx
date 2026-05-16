@@ -59,3 +59,13 @@ codex.local.command_path=/usr/local/bin/codexp
 ```
 
 Теперь проект будет запускать Codex через этот proxy-wrapper.
+## Адрес в браузере
+
+После запуска приложения/сервиса откройте:
+
+```text
+http://localhost:8080
+```
+
+Если меняли `server.port`, используйте тот же хост с вашим портом.
+

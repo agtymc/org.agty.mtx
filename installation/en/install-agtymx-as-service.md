@@ -119,3 +119,13 @@ Disable auto-start:
 ```bash
 sudo systemctl disable org.agty.mtx.service
 ```
+## Browser URL
+
+After the application/service is running, open:
+
+```text
+http://localhost:8080
+```
+
+If you changed `server.port`, use the same host with your custom port.
+

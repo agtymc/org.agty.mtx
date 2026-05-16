@@ -1,11 +1,25 @@
 # AGTY/MTX
 
-Created with Codex; it does not aim to be a project that replaces all LLM chat apps. Distributed AS-IS.
 
 A Spring Boot chat web application with user accounts, grouped conversations, streaming responses, and multiple model backends:
 - local models via Ollama,
 - local Codex CLI (`codex:local`): an account is required, and if you run through a proxy, configure it accordingly (see the installation instructions).
 - Codex via OpenAI API (`codex:api`): not fully completed yet.
+
+Created with Codex; it does not aim to be a project that replaces all LLM chat apps. Distributed AS-IS.
+
+## Quick Start
+
+1. Install Ollama and pull the required models in advance.
+2. Rename `config.ini-sample` to `config.ini` and set required parameters.
+3. Run the built jar from your home/deploy directory with your settings, for example:
+
+```bash
+java -jar org-agty-mtx-1.0.0.jar --server.port=8080
+```
+
+4. Open in browser: `http://localhost:8080`.
+If you changed the port, use your custom port in the browser URL.
 
 ## Tech Stack
 
@@ -165,10 +179,12 @@ codex.api.openai_model=gpt-5.5
 ```
 
 Open: `http://localhost:8080`
+If you changed `server.port`, open the same host with your custom port.
 
 ## Installation Guides
 
 Application/service installation guides are located in the `installation/` directory:
+After installation and startup, open in browser: `http://localhost:8080` (or your custom port if `server.port` was changed).
 
 - Unix service (EN): `installation/en/install-agtymx-as-service.md`
 - Unix service (RU): `installation/ru/install-agtymx-as-service.md`

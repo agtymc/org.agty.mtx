@@ -99,3 +99,13 @@ sc.exe config org.agty.mtx start= auto
 ```bat
 sc.exe delete org.agty.mtx
 ```
+## Адрес в браузере
+
+После запуска приложения/сервиса откройте:
+
+```text
+http://localhost:8080
+```
+
+Если меняли `server.port`, используйте тот же хост с вашим портом.
+
