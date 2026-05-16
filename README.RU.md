@@ -20,6 +20,13 @@ java -jar org-agty-mtx-1.0.0.jar --server.port=8080
 4. Откройте в браузере: `http://localhost:8080`.
 Если порт меняли, используйте свой порт в URL.
 
+<p align="center">
+  <a href="docs/images/screen0.png"><img src="docs/images/screen0.png" alt="AGTY/MTX скриншот 1" width="24%"></a>
+  <a href="docs/images/screen1.png"><img src="docs/images/screen1.png" alt="AGTY/MTX скриншот 2" width="24%"></a>
+  <a href="docs/images/screen2.png"><img src="docs/images/screen2.png" alt="AGTY/MTX скриншот 3" width="24%"></a>
+  <a href="docs/images/screen3.png"><img src="docs/images/screen3.png" alt="AGTY/MTX скриншот 4" width="24%"></a>
+</p>
+
 
 ## Технологии
 

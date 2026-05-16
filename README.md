@@ -8,6 +8,13 @@ A Spring Boot chat web application with user accounts, grouped conversations, st
 
 Created with Codex; it does not aim to be a project that replaces all LLM chat apps. Distributed AS-IS.
 
+<p align="center">
+  <a href="docs/images/screen0.png"><img src="docs/images/screen0.png" alt="AGTY/MTX screenshot 1" width="24%"></a>
+  <a href="docs/images/screen1.png"><img src="docs/images/screen1.png" alt="AGTY/MTX screenshot 2" width="24%"></a>
+  <a href="docs/images/screen2.png"><img src="docs/images/screen2.png" alt="AGTY/MTX screenshot 3" width="24%"></a>
+  <a href="docs/images/screen3.png"><img src="docs/images/screen3.png" alt="AGTY/MTX screenshot 4" width="24%"></a>
+</p>
+
 ## Quick Start
 
 1. Install Ollama and pull the required models in advance.
