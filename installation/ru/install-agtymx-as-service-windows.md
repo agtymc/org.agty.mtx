@@ -2,6 +2,21 @@
 
 Инструкция настраивает Windows-сервис для уже собранного приложения AGTY/MTX.
 
+TODO:
+https://github.com/winsw/winsw/releases
+<service>
+  <id>org.agty.mtx</id>
+  <name>AGTY/MTX</name>
+  <description>AGTY/MTX Application Service</description>
+  <executable>"C:\Program Files\Microsoft\jdk-25.0.3.9-hotspot\bin\java.exe"</executable>
+  <arguments>-jar "d:\org-agty-mtx\bin\org-agty-mtx-1.0.1.jar" --server.port=8083 --server.address=127.0.0.1 --spring.main.web-application-type=servlet</arguments>
+  <logpath>d:\org-agty-mtx\logs</logpath>
+  <logmode>rotate</logmode>
+  <redirectstderrtolog>true</redirectstderrtolog>
+  <redirectstdouttolog>true</redirectstdouttolog>
+  <startmode>Automatic</startmode>
+</service>
+
 Предположения:
 - Приложение уже собрано.
 - Директория деплоя существует (пример): `C:\agty\org.agty.mtx\`
