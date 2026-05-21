@@ -2,103 +2,76 @@
 
 This guide configures a Windows service for an already built AGTY/MTX application.
 
-Assumptions:
+## Prerequisites
+
 - The application is already built.
-- Deployment directory exists (example): `C:\agty\org.agty.mtx\`
-- You already have:
-  - `bin\` (application files)
-  - `logs\` (log files)
+- A free port is selected (the example uses `8080`).
+- The Java path is set: `C:\Program Files\Microsoft\jdk-25.0.3.9-hotspot\bin\java.exe`.
+- Deployment directory exists (example): `C:\agty\org.agty.mtx\`.
+- The deployment directory already contains `bin\` (application files) and `logs\` (log files).
 
-## 1) Create launcher script
+## Install with WinSW
 
-Create `C:\agty\org.agty.mtx\org.agty.mtx.cmd`:
+1. Download WinSW from: https://github.com/winsw/winsw/releases. In `Assets`, choose `WinSW-x64.exe` or a binary matching your OS.
+2. Place the downloaded file into `C:\agty\org.agty.mtx\`.
+3. Rename it to `org.agty.mtx.service.exe`.
+4. Create `org.agty.mtx.service.xml`. Note: the Java path is wrapped in quotes.
+```xml
+<service>
+   <id>org.agty.mtx</id>
+   <name>AGTY/MTX</name>
+   <description>AGTY/MTX Application Service</description>
+   <executable>"C:\Program Files\Microsoft\jdk-25.0.3.9-hotspot\bin\java.exe"</executable>
+   <arguments>-jar "C:\agty\org.agty.mtx\bin\org-agty-mtx-1.0.0.jar" --server.port=8080 --server.address=127.0.0.1 --spring.main.web-application-type=servlet</arguments>
+   <logpath>C:\agty\org.agty.mtx\logs</logpath>
+   <logmode>rotate</logmode>
+   <redirectstderrtolog>true</redirectstderrtolog>
+   <redirectstdouttolog>true</redirectstdouttolog>
+   <startmode>Automatic</startmode>
+</service>
+```
+5. Open `cmd` or PowerShell.
+6. Go to `C:\agty\org.agty.mtx`.
+7. Install the service:
 
 ```bat
-@echo off
-setlocal
-
-set "BASE_DIR=C:\agty\org.agty.mtx"
-set "JAR_PATH=%BASE_DIR%\bin\org-agty-mtx-1.0.0.jar"
-set "LOG_PATH=%BASE_DIR%\logs\org-agty-mtx-1.0.0.log"
-
-cd /d "%BASE_DIR%"
-"C:\Program Files\Java\jdk-17\bin\java.exe" -jar "%JAR_PATH%" >> "%LOG_PATH%" 2>&1
+org.agty.mtx.service.exe install
 ```
 
-Adjust Java path if needed.
+## Service management
 
-## 2) Install service with `sc.exe`
-
-Open terminal as Administrator and run:
+Start:
 
 ```bat
-sc.exe create org.agty.mtx binPath= "cmd.exe /c C:\agty\org.agty.mtx\org.agty.mtx.cmd" start= auto DisplayName= "AGTY/MTX Service"
+org.agty.mtx.service.exe start
 ```
-
-Set restart policy:
-
-```bat
-sc.exe failure org.agty.mtx reset= 86400 actions= restart/5000
-```
-
-## 3) Start service
-
-```bat
-sc.exe start org.agty.mtx
-```
-
-## 4) Check service status
-
-```bat
-sc.exe query org.agty.mtx
-```
-
-## 5) View logs
-
-File logs:
-
-```bat
-type C:\agty\org.agty.mtx\logs\org-agty-mtx-1.0.0.log
-```
-
-Live tail in PowerShell:
-
-```powershell
-Get-Content C:\agty\org.agty.mtx\logs\org-agty-mtx-1.0.0.log -Wait
-```
-
-## Service management commands
 
 Stop:
 
 ```bat
-sc.exe stop org.agty.mtx
+org.agty.mtx.service.exe stop
 ```
 
 Restart:
 
 ```bat
-sc.exe stop org.agty.mtx
-sc.exe start org.agty.mtx
+org.agty.mtx.service.exe restart
 ```
 
-Disable auto-start:
+Status:
 
 ```bat
-sc.exe config org.agty.mtx start= demand
+org.agty.mtx.service.exe status
 ```
 
-Enable auto-start:
+Uninstall:
 
 ```bat
-sc.exe config org.agty.mtx start= auto
+org.agty.mtx.service.exe uninstall
 ```
 
-Delete service:
+If you deploy a new application version, update the JAR version in the XML config and restart the service.
 
-```bat
-sc.exe delete org.agty.mtx
-```
 ## Browser URL
 
 After the application/service is running, open:
@@ -108,4 +81,3 @@ http://localhost:8080
 ```
 
 If you changed `server.port`, use the same host with your custom port.
-

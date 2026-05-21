@@ -1,104 +1,77 @@
 # Установка AGTY/MTX как Windows-сервиса
 
-Инструкция настраивает Windows-сервис для уже собранного приложения AGTY/MTX.
+Эта инструкция настраивает Windows-сервис для уже собранного приложения AGTY/MTX.
 
-Предположения:
+## Предварительные условия
+
 - Приложение уже собрано.
-- Директория деплоя существует (пример): `C:\agty\org.agty.mtx\`
-- Внутри уже есть:
-  - `bin\` (файлы приложения)
-  - `logs\` (файлы логов)
+- Выбран свободный порт (в примере используется `8080`).
+- Указан путь к Java: `C:\Program Files\Microsoft\jdk-25.0.3.9-hotspot\bin\java.exe`.
+- Существует директория деплоя (пример): `C:\agty\org.agty.mtx\`.
+- В директории деплоя уже есть `bin\` (файлы приложения) и `logs\` (файлы логов).
 
-## 1) Создать скрипт запуска
+## Установка через WinSW
 
-Создайте `C:\agty\org.agty.mtx\org.agty.mtx.cmd`:
+1. Скачайте WinSW из репозитория: https://github.com/winsw/winsw/releases. В разделе `Assets` выберите `WinSW-x64.exe` или файл под вашу версию ОС.
+2. Поместите скачанный файл в `C:\agty\org.agty.mtx\`.
+3. Переименуйте файл в `org.agty.mtx.service.exe`.
+4. Создайте конфигурацию `org.agty.mtx.service.xml`. Обратите внимание: путь к Java указан в кавычках.
+```xml
+<service>
+   <id>org.agty.mtx</id>
+   <name>AGTY/MTX</name>
+   <description>AGTY/MTX Application Service</description>
+   <executable>"C:\Program Files\Microsoft\jdk-25.0.3.9-hotspot\bin\java.exe"</executable>
+   <arguments>-jar "C:\agty\org.agty.mtx\bin\org-agty-mtx-1.0.0.jar" --server.port=8080 --server.address=127.0.0.1 --spring.main.web-application-type=servlet</arguments>
+   <logpath>C:\agty\org.agty.mtx\logs</logpath>
+   <logmode>rotate</logmode>
+   <redirectstderrtolog>true</redirectstderrtolog>
+   <redirectstdouttolog>true</redirectstdouttolog>
+   <startmode>Automatic</startmode>
+</service>
+```
+5. Откройте `cmd` или PowerShell.
+6. Перейдите в директорию `C:\agty\org.agty.mtx`.
+7. Установите сервис:
 
 ```bat
-@echo off
-setlocal
-
-set "BASE_DIR=C:\agty\org.agty.mtx"
-set "JAR_PATH=%BASE_DIR%\bin\org-agty-mtx-1.0.0.jar"
-set "LOG_PATH=%BASE_DIR%\logs\org-agty-mtx-1.0.0.log"
-
-cd /d "%BASE_DIR%"
-"C:\Program Files\Java\jdk-17\bin\java.exe" -jar "%JAR_PATH%" >> "%LOG_PATH%" 2>&1
+org.agty.mtx.service.exe install
 ```
 
-При необходимости скорректируйте путь к Java.
+## Управление сервисом
 
-## 2) Создать сервис через `sc.exe`
-
-Откройте терминал от имени администратора и выполните:
+Запуск:
 
 ```bat
-sc.exe create org.agty.mtx binPath= "cmd.exe /c C:\agty\org.agty.mtx\org.agty.mtx.cmd" start= auto DisplayName= "AGTY/MTX Service"
+org.agty.mtx.service.exe start
 ```
 
-Задать политику перезапуска:
+Остановка:
 
 ```bat
-sc.exe failure org.agty.mtx reset= 86400 actions= restart/5000
+org.agty.mtx.service.exe stop
 ```
 
-## 3) Запустить сервис
+Перезапуск:
 
 ```bat
-sc.exe start org.agty.mtx
+org.agty.mtx.service.exe restart
 ```
 
-## 4) Проверить статус сервиса
+Статус:
 
 ```bat
-sc.exe query org.agty.mtx
+org.agty.mtx.service.exe status
 ```
 
-## 5) Просмотр логов
-
-Логи в файле:
+Удаление:
 
 ```bat
-type C:\agty\org.agty.mtx\logs\org-agty-mtx-1.0.0.log
+org.agty.mtx.service.exe uninstall
 ```
 
-Live-режим в PowerShell:
+Если загружаете обновление версии, обязательно меняйте номер версии в конфиге и перезапускайте сервис.
 
-```powershell
-Get-Content C:\agty\org.agty.mtx\logs\org-agty-mtx-1.0.0.log -Wait
-```
-
-## Команды управления сервисом
-
-Остановить:
-
-```bat
-sc.exe stop org.agty.mtx
-```
-
-Перезапустить:
-
-```bat
-sc.exe stop org.agty.mtx
-sc.exe start org.agty.mtx
-```
-
-Отключить автозапуск:
-
-```bat
-sc.exe config org.agty.mtx start= demand
-```
-
-Включить автозапуск:
-
-```bat
-sc.exe config org.agty.mtx start= auto
-```
-
-Удалить сервис:
-
-```bat
-sc.exe delete org.agty.mtx
-```
 ## Адрес в браузере
 
 После запуска приложения/сервиса откройте:
@@ -108,4 +81,3 @@ http://localhost:8080
 ```
 
 Если меняли `server.port`, используйте тот же хост с вашим портом.
-
